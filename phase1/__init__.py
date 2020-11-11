@@ -9,7 +9,10 @@ Contributors:
     Archit Siby
     Brock Chelle
 """
+import json
 import sys
+
+from pymongo import MongoClient
 
 
 def printHelpMessage(message):
@@ -67,10 +70,62 @@ def getPortNumber():
 
         return portNumber
 
-
     except ValueError:
         printHelpMessage('You Passed a Non-Numeric Port Number Into the Application')
 
+def initializeDb(portNumber):
+    """
+    Connect to the db server at the given port number.
+
+    Attempts to connect to the db at the server
+    If no db exists then it is created
+
+    It checks the db for the collections 'Posts', 'Tags', 'Tags'
+    If they exist then they are dropped and created
+    They are created from json files in the same directory
+
+    Args:
+        portNumber: The port number where we will connect to the db
+    """
+    # Establishes a connection with the port
+    client = MongoClient('localhost', portNumber)
+
+    # Creates or opens the database on server.
+    db = client['291db']
+
+    # Gets the list of collections from the db
+    collectionList = db.list_collection_names()
+    print(collectionList)
+
+    # Drops any of the collections if they exist
+    for collection in collectionList:
+        db[collection].drop()
+
+    # Creates the 'Posts', 'Tags', 'Posts' collections
+    insertJsonFileIntoDb('Posts.json', 'posts', db['Posts'])
+    insertJsonFileIntoDb('Tags.json', 'tags', db['Tags'])
+    insertJsonFileIntoDb('Votes.json', 'votes', db['Votes'])
+
+
+
+def insertJsonFileIntoDb(fileName, collectionName, collection):
+    """
+    Insert the content of a json file into a collection in the db.
+
+    Args:
+        filename: The name of the file, with the json extension
+        collectionName: The name of the collection
+        collection: The collection to inser into
+    """
+    with open(fileName) as jsonFile:
+        jsonContent = json.load(jsonFile)[collectionName]['row']
+
+    collection.insert_many(jsonContent)
+
+
 
 if __name__ == "__main__":
+    # Parses and Validates Command-Line Arguments for the Port Number
     portNumber = getPortNumber()
+
+    initializeDb(portNumber)
