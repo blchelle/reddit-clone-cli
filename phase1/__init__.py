@@ -11,9 +11,11 @@ Contributors:
 """
 import json
 import sys
+import re
 
 from pymongo import MongoClient
 
+relativePath = __file__.rpartition('/')[0] +'/'
 
 def printHelpMessage(message):
     """
@@ -73,6 +75,7 @@ def getPortNumber():
     except ValueError:
         printHelpMessage('You Passed a Non-Numeric Port Number Into the Application')
 
+
 def initializeDb(portNumber):
     """
     Connect to the db server at the given port number.
@@ -101,11 +104,50 @@ def initializeDb(portNumber):
     for collection in collectionList:
         db[collection].drop()
 
-    # Creates the 'Posts', 'Tags', 'Posts' collections
+    # Creates the 'Posts', 'Tags', 'Votes' collections
     insertJsonFileIntoDb('Posts.json', 'posts', db['Posts'])
     insertJsonFileIntoDb('Tags.json', 'tags', db['Tags'])
     insertJsonFileIntoDb('Votes.json', 'votes', db['Votes'])
 
+
+def createPostsIndex(postsJson):
+    """
+    Insert a new field 'terms' which will be indexed for searching.
+
+    Args:
+        postsJson: The content of the Posts.json file
+
+    Return:
+        dict: The updated json which has the 'terms' entry for each post
+    """
+    for post in postsJson:
+        bodyTerms = []
+        titleTerms = []
+
+        # Fetches the body and the title from the post
+        body = post.get('Body')
+        title = post.get('Title')
+
+        # Collects unique terms from the body and the title
+        if body is not None:
+            bodyTerms = set(re.split('[^a-zA-Z0-9]', body.lower()))
+
+        if title is not None:
+            titleTerms = set(re.split('[^a-zA-Z0-9]', title.lower()))
+
+        # Joins the set of terms
+        terms = bodyTerms.union(titleTerms)
+        copyTerms = terms.copy()
+
+        # Filters out all terms of length less than 3
+        for term in copyTerms:
+            if len(term) < 3:
+                terms.remove(term)
+
+        # Updates the post json
+        post.update({'Terms': tuple(terms)})
+
+    return postsJson
 
 
 def insertJsonFileIntoDb(fileName, collectionName, collection):
@@ -117,15 +159,21 @@ def insertJsonFileIntoDb(fileName, collectionName, collection):
         collectionName: The name of the collection
         collection: The collection to inser into
     """
-    with open(fileName) as jsonFile:
+    # Read the JSON file
+    with open(relativePath + fileName) as jsonFile:
         jsonContent = json.load(jsonFile)[collectionName]['row']
 
-    collection.insert_many(jsonContent)
+    if (collectionName is 'posts'):
+        jsonContent = createPostsIndex(jsonContent)
+        collection.create_index('Terms')
 
+    # Inserts the data from the JSON file into the collection
+    collection.insert_many(jsonContent)
 
 
 if __name__ == "__main__":
     # Parses and Validates Command-Line Arguments for the Port Number
     portNumber = getPortNumber()
 
+    # Connects and inserts collections into the data
     initializeDb(portNumber)
