@@ -1,6 +1,6 @@
 {
-    "python.linting.mypyEnabled": true,
-    "python.linting.pydocstyleEnabled": true,
+    "python.linting.mypyEnabled": false,
+    "python.linting.pydocstyleEnabled": false,
     "python.linting.enabled": true,
     "python.languageServer": "Pylance",
     "editor.insertSpaces": true,
@@ -13,5 +13,6 @@
         "**/.DS_Store": true,
         "**/*.pyc": true,
         "**/__pycache__/": true
-    }
+    },
+    "python.linting.pylintEnabled": true
 }
