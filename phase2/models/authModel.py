@@ -1,5 +1,4 @@
 from models import model
-import pprint
 import sqlite3
 
 
@@ -28,12 +27,4 @@ class AuthModel(model.Model):
         db = self.client["291db"]
         posts = db["Posts"]
         results = posts.find({"OwnerUserId":uid})
-        if results.count(True) > 0:
-            print("RESULTS:")
-            for m in results:
-                pp = pprint.PrettyPrinter(indent=4)
-                pp.pprint(m)
-                print()
-                print()
-        else:
-            print("no results")
+        return results

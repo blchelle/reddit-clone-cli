@@ -1,5 +1,6 @@
 from models import authModel
 from views import authView
+from controllers import MainController
 
 class AuthController:
 	def __init__(self, port):
@@ -24,17 +25,22 @@ class AuthController:
 				credentials = self.view.getLoginCredentials()
 
 				# Attempts to login the user with their credentials provided
-				result = self.model.attemptLogin(credentials['uid'])
+				uid = credentials['uid']
+				results = self.model.attemptLogin(uid)
 
-				# if result is not None:
-				# 	MainController.MainController(self.port).run(credentials['uid']) # move to main controller
-				# else:
-				# 	self.view.logMessage("#ERROR: Wrong uid or password, Try again")
+				if results.count(True) > 0:
+					self.view.displayReport(uid,results)
+				else:
+					self.view.logMessage("No Report for this User: "+uid)
 
+				MainController.MainController(self.port).run(uid) # move to main controller
 
-			elif authAction == 'Login as Anon':
+			elif authAction == 'Login as Anonymous':
 				# Prompts and retrieves the desired uid
-				print("ANON BOY")
+				uid = -1
+				self.view.logMessage("Logged in as User: "+uid)
+
+				MainController.MainController(self.port).run(uid) # move to main controller
 
 			else: # Exit
 				break

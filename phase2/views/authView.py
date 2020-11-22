@@ -1,6 +1,9 @@
 """This module brings the cli module."""
 from views import view
 from PyInquirer import style_from_dict, Token, prompt, Separator
+import pprint
+
+
 
 class AuthView(view.View):
 
@@ -19,7 +22,7 @@ class AuthView(view.View):
 				'name': 'auth method',
 				'choices': [
 					"Login with Username",
-					"Login as anon",
+					"Login as Anonymous",
 					"Exit"
 				]
 			}
@@ -45,3 +48,13 @@ class AuthView(view.View):
 		]
 
 		return prompt(loginPrompts, style=self.style)
+
+	def displayReport(self,uid,results):
+
+		print("Report for User: "+uid)
+		print()
+		for m in results:
+			pp = pprint.PrettyPrinter(indent=4)
+			pp.pprint(m)
+			print()
+			print()
