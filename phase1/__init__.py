@@ -15,7 +15,7 @@ import re
 
 from pymongo import MongoClient
 
-relativePath = __file__.rpartition('/')[0] +'/'
+relativePath = __file__.rpartition('/')[0] +''
 
 def printHelpMessage(message):
     """
