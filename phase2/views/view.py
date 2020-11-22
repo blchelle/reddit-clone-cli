@@ -3,6 +3,7 @@ from __future__ import print_function, unicode_literals
 
 from PyInquirer import style_from_dict, Token
 
+
 class View:
 	"""
 	A base class for views which is not intended to be instantiated
