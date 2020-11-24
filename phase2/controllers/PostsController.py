@@ -19,7 +19,7 @@ class PostsController:
 		while postAction != 'Back':
 
 			# Prompts the user for the action they want to perform on the post
-			postAction = self.view.getQuestionAction()
+			postAction = self.view.getQuestionAction(uid == -1 or not self.model.userHasVotedOnPost(uid, pid))
 			if(postAction == {} ):
 				self.view.logMessage("#ERROR: Don't Click on the Options, Try again with keystrokes")
 				continue
@@ -46,3 +46,8 @@ class PostsController:
 				self.runAnswers(uid, selectedAnswerPid)
 			elif postAction == "Vote":
 				continue
+
+	def runAnswers(self, uid, aid):
+		action = ''
+		while action != 'Back':
+			action = self.view.getAnswerAction(uid == -1 or not self.model.userHasVotedOnPost(uid, aid))

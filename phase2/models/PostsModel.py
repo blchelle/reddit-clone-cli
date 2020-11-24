@@ -157,3 +157,22 @@ class PostsModel(model.Model):
 			})
 
 		return True
+
+	def userHasVotedOnPost(self, uid, pid):
+		"""
+		Determines if a user (uid) has voted on the post (pid)
+
+		Args:
+			uid: The id of the user
+			pid: The id of the post
+
+		Returns:
+			bool: True if the user has voted on the post, false otherwise
+		"""
+
+		db = self.client["291db"]
+		votes = db["Votes"]
+
+		result = votes.find_one( { "$and": [ { "UserId": uid }, { "PostId": pid } ] } )
+
+		return result is not None
