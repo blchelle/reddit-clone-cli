@@ -3,7 +3,7 @@ from views import PostsView
 from models import authModel
 
 class PostsController:
-    def __init__(self,port):
+    def __init__(self, port):
         self.model = PostsModel.PostsModel(port)
         self.view = PostsView.PostsView()
         self.port = port
@@ -28,6 +28,21 @@ class PostsController:
             if postAction == "Answer Question":
                 continue
             elif postAction == "List Answers":
-                continue
+                print('Question Id: ' + pid)
+                answersToQuestion = self.model.listAnswersForQuestion(pid)
+                selectedAnswerPid = self.view.getAnswerListAction(answersToQuestion)
+                selectedAnswerInfo = self.model.getAnswerFromPid(selectedAnswerPid)
+                self.view.outputAnswerFields(selectedAnswerInfo)
+                self.runAnswers(uid, selectedAnswerPid)
+
             elif postAction == "Vote":
                 continue
+
+    def runAnswers(self, uid, pid):
+        """
+        Runs the answers menu
+        """
+
+        answerAction = ''
+        while answerAction != 'Back':
+            answerAction = self.view.getAnswerAction()

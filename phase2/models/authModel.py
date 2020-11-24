@@ -49,6 +49,5 @@ class AuthModel(model.Model):
                 results.append(str(r["avgScoreA"]))
 
         results.append(str(v_results.count()))
-        
 
         return results
