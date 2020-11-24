@@ -28,7 +28,7 @@ class AuthController:
 				uid = credentials['uid']
 				results = self.model.attemptLogin(uid)
 
-				if results.count(True) > 0:
+				if len(results)> 0:
 					self.view.displayReport(uid,results)
 				else:
 					self.view.logMessage("No Report for this User: "+uid)
@@ -38,7 +38,7 @@ class AuthController:
 			elif authAction == 'Login as Anonymous':
 				# Prompts and retrieves the desired uid
 				uid = -1
-				self.view.logMessage("Logged in as User: "+uid)
+				self.view.logMessage("Logged in as User: "+str(uid))
 
 				MainController.MainController(self.port).run(uid) # move to main controller
 
