@@ -20,7 +20,7 @@ class AuthView(view.View):
 				'message': 'Select an action',
 						'name': 'auth method',
 						'choices': [
-								"Login with Username",
+								"Login with UserId",
 								"Login as Anonymous",
 								"Exit"
 						]
@@ -46,7 +46,15 @@ class AuthView(view.View):
 			}
 		]
 
-		return prompt(loginPrompts, style=self.style)
+		uid = ''
+		while uid == '':
+			uid = prompt(loginPrompts, style=self.style)['uid'].strip()
+
+			if uid == '':
+				self.logMessage('# ERROR: Please provide a non-empty uid')
+
+		return uid
+
 
 	def displayReport(self, uid, results):
 
