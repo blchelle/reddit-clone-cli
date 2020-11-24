@@ -72,3 +72,36 @@ class PostsModel(model.Model):
         result = posts.find_one( { "Id": pid } )
 
         return result
+
+    def getAcceptedAnswerId(self, qid):
+        """
+        Gets the pid of the accepted answer for a qid, or None if there isn't one
+
+        Args:
+            qid: The pid of the answer post
+
+        Return:
+            str: The id of the accepted answer
+        """
+        # Gets the posts collection
+        db = self.client[self.dbname]
+        posts = db["Posts"]
+
+        # Queries for the accepted answer id
+        result = posts.find_one(
+            {
+                "$and":
+                    [
+                        { "AcceptedAnswerId": { "$exists": 1 } },
+                        { "Id": qid }
+                    ]
+            },
+            {
+                "AcceptedAnswerId": 1
+            }
+        )
+
+        if result is None:
+            return None
+        else:
+            return result['AcceptedAnswerId']

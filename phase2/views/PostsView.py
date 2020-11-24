@@ -25,20 +25,22 @@ class PostsView(view.View):
 
         return prompt(questionActionPrompt, style=self.style)
 
-    def getAnswerListAction(self, answers):
+    def getAnswerListAction(self, answers, acceptedAnswerPid):
         """
         Display a list of answers and get input from the user to select one
 
         Args:
-            answers
-        -------
-        Prompt message for question actions
+            answers: All the answers to display
+            acceptedAnswerPid: The accepted answer pid
 
+        Returns:
+            str: The pid of the users selected answer
         """
         actions=[]
 
         for answer in answers:
             id = answer['Id']
+
             body         = "".join(answer['Body'].split('\n'))
             creationDate = answer['CreationDate']
             score        = answer['Score']
@@ -53,7 +55,12 @@ class PostsView(view.View):
 
             action += creationDate + ' '
             action += str(score)
-            actions.append(action)
+
+            if acceptedAnswerPid == id:
+                action += ' *'
+                actions.insert(0, action)
+            else:
+                actions.append(action)
 
         questionActionPrompt = [
             {
@@ -61,7 +68,6 @@ class PostsView(view.View):
                 'message': ' Id' + 5 * ' ' + 'Body' + 80 * ' ' + 'Creation Date' + 11 * ' ' + 'Score',
                 'name':'answerListAction',
                 'choices': actions
-
             }
         ]
 

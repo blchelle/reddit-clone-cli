@@ -30,7 +30,8 @@ class PostsController:
             elif postAction == "List Answers":
                 print('Question Id: ' + pid)
                 answersToQuestion = self.model.listAnswersForQuestion(pid)
-                selectedAnswerPid = self.view.getAnswerListAction(answersToQuestion)
+                acceptedAnswerPid = self.model.getAcceptedAnswerId(pid)
+                selectedAnswerPid = self.view.getAnswerListAction(answersToQuestion, acceptedAnswerPid)
                 selectedAnswerInfo = self.model.getAnswerFromPid(selectedAnswerPid)
                 self.view.outputAnswerFields(selectedAnswerInfo)
                 self.runAnswers(uid, selectedAnswerPid)
