@@ -5,10 +5,11 @@ class PostsView(view.View):
 
     def getQuestionAction(self):
         """
-
+		Get action menu for questions
 
         Returns
         -------
+		Prompt message for question actions
 
         """
         actions=["Answer Question", "List Answers", "Vote", "Back"]

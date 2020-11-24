@@ -32,9 +32,6 @@ class MainController:
                 # Prompts and recieves question values
                 postValues = self.mainView.getQuestionPostValues()
 
-                # posts question to database
-                # self.model.postQuestion(postValues['title'], postValues['text'],user)
-                # self.view.logMessage("Question posted successfully")
                 continue
 
             elif mainAction == 'Search for posts':

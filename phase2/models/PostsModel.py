@@ -5,6 +5,10 @@ import sqlite3
 class PostsModel(model.Model):
     dbname = '291db'
     def updateQuestionView(self, pid):
+        """
+		Updates view count for selected question
+
+        """
         db = self.client[self.dbname]
         posts = db["Posts"]
         buffer = posts.find({"Id":pid})

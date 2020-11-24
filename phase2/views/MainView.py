@@ -94,7 +94,7 @@ class MainView(view.View):
 
         Returns
         -------
-        selected post
+        list of results that are selectable
         """
         max_len = self.findMaxLength(results)
         postList=[]
@@ -103,21 +103,7 @@ class MainView(view.View):
         header+='  '+'Creation Date'.ljust(max_len[2])
         header+='  '+'Score'.ljust(max_len[3])
         header+='  '+'Answer Count'.ljust(max_len[4])
-        #
-        #
-        # for post in result:
-        #     string=""
-        #     i=0
-        #     post=list(post)
-        #     if(post[7] == 'N/A'):
-        #         post[6] = 'N/A'
-        #     for column in post:
-        #         if(i <7):
-        #             string+=str(column).ljust(max_len[i], ' ')
-        #         string+="   "
-        #         i+=1
-        #
-        #     postList.append(string)
+
 
 
         for post in results:
