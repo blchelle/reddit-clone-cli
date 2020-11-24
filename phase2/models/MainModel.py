@@ -2,6 +2,7 @@ from models import model
 from datetime import datetime
 import uuid
 import sqlite3
+import re
 
 class MainModel(model.Model):
 
@@ -44,23 +45,29 @@ class MainModel(model.Model):
             "ContentLicense": "CC BY-SA 2.5"
             })
         
+        
+    test="test"
+    dbname = "291db"
+    def findQuestions(self, searchString):
+        """
+		find questions based on keywords
 
+        Returns
+        -------
+		list of matching questions
 
-        # insertPostQuery = \
-        # '''
-        #     INSERT INTO posts
-        #     VALUES (?,DATE('now', 'localtime'),?,?,?);
-        # '''
-        # insertQuestionQuery = \
-        # '''
-        #     INSERT INTO questions
-        #     VALUES (?,?);
-        # '''
-        # try:
-        #     # Executes and commits the query with the passed in parameters
-        #     self.cursor.execute(insertPostQuery,(pid ,title, body, poster))
-        #     self.cursor.execute(insertQuestionQuery, (pid, ""))
-        #     self.connection.commit()
-        # except sqlite3.Error as e:
-        #     self.connection.rollback()
-        #     print(e)
+        """
+        searchExpr = searchString.split(" ")
+        patternList=[]
+        results = []
+        for keyWord in searchExpr:
+            pattern = re.compile(".*" + keyWord + ".*", re.IGNORECASE)
+            patternList.append(pattern)
+        db = self.client[self.dbname]
+        posts = db["Posts"]
+        buffer = posts.find({"PostTypeId":"1", '$or':[
+        {"Title":{'$in': patternList}},
+        {"Body":{'$in': patternList}},
+        {"Tags":{'$in': patternList}}]})
+        results.extend(buffer)
+        return results
