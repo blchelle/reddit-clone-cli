@@ -1,6 +1,7 @@
 from models import model
 import uuid
 import sqlite3
+import re
 
 class MainModel(model.Model):
 
@@ -16,14 +17,16 @@ class MainModel(model.Model):
 
         """
         searchExpr = searchString.split(" ")
+        patternList=[]
         results = []
         for keyWord in searchExpr:
-            pattern = ".*" + keyWord + ".*"
-            db = self.client[self.dbname]
-            posts = db["Posts"]
-            buffer = posts.find({"PostTypeId":"1", '$or':[
-            {"Title":{'$regex': pattern,'$options':'i'}},
-            {"Body":{"$regex": pattern, '$options':'i'}},
-            {"Tags":{"$regex": pattern, '$options':'i'}}]})
-            results.extend(buffer)
+            pattern = re.compile(".*" + keyWord + ".*")
+            patternList.append(pattern)
+        db = self.client[self.dbname]
+        posts = db["Posts"]
+        buffer = posts.find({"PostTypeId":"1", '$or':[
+        {"Title":{'$in': patternList}},
+        {"Body":{'$in': patternList}},
+        {"Tags":{'$in': patternList}}]})
+        results.extend(buffer)
         return results
