@@ -41,8 +41,6 @@ class MainModel(model.Model):
 		for tag in tagsList:
 
 			tag_exist = tags_collection.find({"TagName":tag})
-			print("Count: "+ str(tag_exist.count()))
-			print()
 			if(tag_exist.count() != 0):
 				for doc in tag_exist:
 					tags_collection.update_one({"_id":doc["_id"]},{"$set":{"Count":doc["Count"]+1}})
@@ -64,9 +62,9 @@ class MainModel(model.Model):
 		posts.insert({
 			"Id":str(newID),
 			"PostTypeId": "1",
-			"CreationDate":str(datetime.now()),
+			"CreationDate":str(datetime.now().isoformat()),
 			"Title": title,
-			"Body": "<p>"+body+"</p>\n",
+			"Body":body,
 			"OwnerUserId": poster,
 			"Tags": tags,
 			"Score": 0,
