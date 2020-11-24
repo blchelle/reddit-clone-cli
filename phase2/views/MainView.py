@@ -94,7 +94,7 @@ class MainView(view.View):
 
         Returns
         -------
-        selected post
+        list of results that are selectable
         """
         max_len = self.findMaxLength(results)
         postList=[]

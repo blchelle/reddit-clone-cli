@@ -7,7 +7,14 @@ class MainModel(model.Model):
     test="test"
     dbname = "291db"
     def findQuestions(self, searchString):
-        # print(searchString)
+        """
+		find questions based on keywords
+
+        Returns
+        -------
+		list of matching questions
+
+        """
         searchExpr = searchString.split(" ")
         results = []
         for keyWord in searchExpr:
