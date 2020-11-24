@@ -32,12 +32,9 @@ class MainController:
                 # Prompts and recieves question values
                 postValues = self.mainView.getQuestionPostValues()
                 tagsList=postValues['tags'].strip().split()
-                tags =""
-                for tag in tagsList:
-                    tags+="<"+tag+">"
 
                 # posts question to database
-                self.model.postQuestion(postValues['title'], postValues['text'],tags,user)
+                self.model.postQuestion(postValues['title'], postValues['text'],tagsList,user)
                 self.view.logMessage("Question posted successfully")
                 continue
 
