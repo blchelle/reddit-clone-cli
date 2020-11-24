@@ -4,7 +4,6 @@ from PyInquirer import style_from_dict, Token, prompt, Separator
 import pprint
 
 
-
 class AuthView(view.View):
 
 	def getAuthenticationAction(self):
@@ -19,12 +18,12 @@ class AuthView(view.View):
 			{
 				'type': 'list',
 				'message': 'Select an action',
-				'name': 'auth method',
-				'choices': [
-					"Login with Username",
-					"Login as Anonymous",
-					"Exit"
-				]
+						'name': 'auth method',
+						'choices': [
+								"Login with Username",
+								"Login as Anonymous",
+								"Exit"
+						]
 			}
 		]
 
@@ -36,7 +35,7 @@ class AuthView(view.View):
 		Returns
 		-------
 		{}
-			The users entered login credentials
+				The users entered login credentials
 		"""
 
 		loginPrompts = [
@@ -49,15 +48,35 @@ class AuthView(view.View):
 
 		return prompt(loginPrompts, style=self.style)
 
-	def displayReport(self,uid,results):
+	def displayReport(self, uid, results):
 
 		print()
 		print("Report for User: "+uid)
 		print()
-		print("Number of Questions Posted  : "+ results[0])
-		print("Average Score for Questions : "+ results[1])
-		print("Number of Answers Posted    : "+ results[2])
-		print("Average Score for Answers   : "+ results[3])
-		print("Votes received by User      : "+ results[4])
+
+		if("noQ" in results):
+			print("Number of Questions Posted  : " + results["noQ"])
+		else:
+			print("Number of Questions Posted  : None")
+
+		if("avgSQ" in results):
+			print("Average Score for Questions : " + results["avgSQ"])
+		else:
+			print("Average Score for Questions : None")
+
+		if("noA" in results):
+			print("Number of Answers Posted    : " + results["noA"])
+		else:
+			print("Number of Answers Posted    : None")
+
+		if("avgSA" in results):
+			print("Average Score for Answers   : " + results["avgSA"])
+		else:
+			print("Average Score for Answers   : None")
+
+		if("votes" in results):
+			print("Votes received by User      : " + results["votes"])
+		else:
+			print("Votes received by User      : None")
+
 		print()
-		

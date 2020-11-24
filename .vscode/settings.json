@@ -3,7 +3,6 @@
     "python.linting.pydocstyleEnabled": false,
     "python.linting.enabled": true,
     "python.languageServer": "Pylance",
-    "editor.insertSpaces": true,
     "editor.tabSize": 4,
     "files.exclude": {
         "**/.git": true,
