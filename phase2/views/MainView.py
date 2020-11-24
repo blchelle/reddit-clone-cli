@@ -22,7 +22,7 @@ class MainView(view.View):
                 'name': 'action method',
                 'choices': [
                     "Post a question",
-                    "Search for posts",
+                    "Search for questions",
                     "Log Out"
                 ]
             }
