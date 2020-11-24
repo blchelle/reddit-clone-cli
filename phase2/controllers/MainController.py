@@ -1,7 +1,6 @@
 from views import view
 from views import MainView
 from models import MainModel
-from controllers import PostsController
 # from controllers import postsController
 
 class MainController:
@@ -10,7 +9,6 @@ class MainController:
         self.view = view.View()
         self.mainView = MainView.MainView()
         self.port = port
-        self.postsController = PostsController.PostsController(port)
 
 
     def run(self, user):
@@ -39,70 +37,64 @@ class MainController:
 
             elif mainAction == 'Search for posts':
                 # Prompts and recieves search values
-                result = []
                 postValues = self.mainView.getSearchValues()
                 if(postValues['keywords'].strip()==""):
                     self.view.logMessage("#ERROR: Please enter one or more keywords to search for")
                     continue
-                else:
-                    s = postValues['keywords']
-                    result = self.model.findQuestions(s)
-
 
                 # # finds all search results from the database
-
-                max_len = [10,10,10,10]
-                if(result == []):
-                    self.view.logMessage("# NO MATCHING RESULTS, try a different keyword")
-                    continue
-                self.view.logMessage("Results displayed below")
+                # result,max_len = self.model.searchPost(postValues['keywords'])
+                # if(result == []):
+                #     self.view.logMessage("# NO MATCHING RESULTS, try a different keyword")
+                #     continue
+                # self.view.logMessage("Results displayed below")
                 # #counters for showing 5 results at a time
 
-                numPostsRemaining = len(result) - 5
-                if (numPostsRemaining > 0):
-                    more = True
-                else:
-                    more = False
+                # numPostsRemaining = len(result) - 5
+                # if (numPostsRemaining > 0):
+                #     more = True
+                # else:
+                #     more = False
 
-                searchAction = self.mainView.getQuestionSearchAction(result[0:5], max_len, more)
-                if(searchAction == {} ):
-                    self.view.logMessage("#ERROR: Don't Click on the Options, Try again with keystrokes")
-                    continue
-                searchAction = searchAction['action method']
+                # searchAction = self.mainView.getPostSearchAction(result[0:5], max_len, more)
+                # if(searchAction == {} ):
+                #     self.view.logMessage("#ERROR: Don't Click on the Options, Try again with keystrokes")
+                #     continue
+                # searchAction = searchAction['action method']
 
                 # # Posting selected post to screen
-                self.view.logMessage(" "+searchAction)
+                # self.view.logMessage(" "+searchAction)
 
                 # #show 5 more as asked more
-                pageNumber = 0
-                while(searchAction == "Show more results"):
-                    #show the max results possible here and break
-                    pageNumber += 1
+                # pageNumber = 0
+                # while(searchAction == "Show more results"):
+                #     #show the max results possible here and break
+                #     pageNumber += 1
 
-                    if (numPostsRemaining - 5 > 0):
-                        more = True
-                    else:
-                        more = False
+                #     if (numPostsRemaining - 5 > 0):
+                #         more = True
+                #     else:
+                #         more = False
 
-                    searchAction = self.mainView.getQuestionSearchAction(
-                        result[pageNumber * 5 : pageNumber * 5 + min(numPostsRemaining, 5)],
-                        max_len,
-                        more
-                    )
+                #     searchAction = self.mainView.getPostSearchAction(
+                #         result[pageNumber * 5 : pageNumber * 5 + min(numPostsRemaining, 5)],
+                #         max_len,
+                #         more
+                #     )
 
-                    if(searchAction == {} ):
-                        self.view.logMessage("#ERROR: Don't Click on the Options, Try again with keystrokes")
-                        continue
-                    searchAction = searchAction['action method']
+                #     if(searchAction == {} ):
+                #         self.view.logMessage("#ERROR: Don't Click on the Options, Try again with keystrokes")
+                #         continue
+                #     searchAction = searchAction['action method']
 
-                    numPostsRemaining -= 5
+                #     numPostsRemaining -= 5
 
-                if(searchAction == "Back"):
-                    continue
+                # if(searchAction == "Back"):
+                #     continue
 
                 # #retrieve the post id and go to post action menu
-                selectedPost = searchAction.split()[0]
-                PostsController.PostsController(self.port).run(user, selectedPost)
+                # selectedPost = searchAction.split()[0]
+                # postsController.PostsController(self.port).run(user, selectedPost)
 
             else: # Log out
                 return
