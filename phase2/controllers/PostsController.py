@@ -3,7 +3,7 @@ from views import PostsView
 from models import authModel
 
 class PostsController:
-	def __init__(self,port):
+	def __init__(self, port):
 		self.model = PostsModel.PostsModel(port)
 		self.view = PostsView.PostsView()
 		self.port = port
@@ -37,6 +37,12 @@ class PostsController:
 					self.view.logMessage("Failed to add your answer")
 				continue
 			elif postAction == "List Answers":
-				continue
+				print('Question Id: ' + pid)
+				answersToQuestion = self.model.listAnswersForQuestion(pid)
+				acceptedAnswerPid = self.model.getAcceptedAnswerId(pid)
+				selectedAnswerPid = self.view.getAnswerListAction(answersToQuestion, acceptedAnswerPid)
+				selectedAnswerInfo = self.model.getAnswerFromPid(selectedAnswerPid)
+				self.view.outputAnswerFields(selectedAnswerInfo)
+				self.runAnswers(uid, selectedAnswerPid)
 			elif postAction == "Vote":
 				continue

@@ -31,7 +31,7 @@ class AuthModel(model.Model):
         votes = db["Votes"]
 
         p_results = posts.find({"OwnerUserId": uid})
-        
+
         if(p_results.count()==0):
                 return results
 
