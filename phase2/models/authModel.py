@@ -24,7 +24,7 @@ class AuthModel(model.Model):
 
         # Template query for checking if the user is logged in
 
-        results = []
+        results = {}
 
         db = self.client["291db"]
         posts = db["Posts"]
@@ -48,13 +48,13 @@ class AuthModel(model.Model):
         v_results = votes.find({"PostId": {"$in": postList}})
 
         for r in q_results:
-            results.append(str(r["noOfQuestions"]))
-            results.append(str(r["avgScoreQ"]))
+            results["noQ"] = str(r["noOfQuestions"])
+            results["avgSQ"] = str(r["avgScoreQ"])
 
         for r in a_results:
-            results.append(str(r["noOfAnswers"]))
-            results.append(str(r["avgScoreA"]))
+            results["noA"] = str(r["noOfAnswers"])
+            results["avgSA"] = str(r["avgScoreA"])
 
-        results.append(str(v_results.count()))
+        results["votes"] = str(v_results.count())
 
         return results
