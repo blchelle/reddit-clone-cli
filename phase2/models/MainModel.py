@@ -38,7 +38,7 @@ class MainModel(model.Model):
         posts.insert({
             "Id":str(newID),
             "PostTypeId": "1",
-            "CreationDate":datetime.now(),
+            "CreationDate":str(datetime.now()),
             "Title": title,
             "Body": "<p>"+body+"</p>\n",
             "OwnerUserId": poster,
