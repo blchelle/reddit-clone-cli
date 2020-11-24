@@ -24,30 +24,37 @@ class AuthModel(model.Model):
 
         # Template query for checking if the user is logged in
 
-        results = []
+        results = {}
+
         db = self.client["291db"]
         posts = db["Posts"]
         votes = db["Votes"]
+
+        p_results = posts.find({"OwnerUserId": uid})
+
+        if(p_results.count()==0):
+                return results
+
         q_results = posts.aggregate([{"$match": {"OwnerUserId": uid}}, {"$match": {"PostTypeId": "1"}}, {
                                     "$group": {"_id": "$OwnerUserId", "avgScoreQ": {"$avg": "$Score"}, "noOfQuestions": {"$sum": 1}}}])
         a_results = posts.aggregate([{"$match": {"OwnerUserId": uid}}, {"$match": {"PostTypeId": "2"}}, {
                                     "$group": {"_id": "$OwnerUserId", "avgScoreA": {"$avg": "$Score"}, "noOfAnswers": {"$sum": 1}}}])
 
-        p_results = posts.find({"OwnerUserId":uid})
-        postList =[]
+        p_results = posts.find({"OwnerUserId": uid})
+        postList = []
         for r in p_results:
-                postList.append(r["Id"])
+            postList.append(r["Id"])
 
-        v_results = votes.find({"PostId":{"$in":postList}})
+        v_results = votes.find({"PostId": {"$in": postList}})
 
         for r in q_results:
-                results.append(str(r["noOfQuestions"]))
-                results.append(str(r["avgScoreQ"]))
+            results["noQ"] = str(r["noOfQuestions"])
+            results["avgSQ"] = str(r["avgScoreQ"])
 
         for r in a_results:
-                results.append(str(r["noOfAnswers"]))
-                results.append(str(r["avgScoreA"]))
+            results["noA"] = str(r["noOfAnswers"])
+            results["avgSA"] = str(r["avgScoreA"])
 
-        results.append(str(v_results.count()))
+        results["votes"] = str(v_results.count())
 
         return results

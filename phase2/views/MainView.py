@@ -49,6 +49,11 @@ class MainView(view.View):
                 'type': 'input',
                 'message': 'Enter question body: ',
                 'name': 'text'
+            },
+            {
+                'type': 'input',
+                'message': 'Enter zero or more tags: ',
+                'name': 'tags'
             }
         ]
 
