@@ -20,7 +20,7 @@ class MainModel(model.Model):
         patternList=[]
         results = []
         for keyWord in searchExpr:
-            pattern = re.compile(".*" + keyWord + ".*")
+            pattern = re.compile(".*" + keyWord + ".*", re.IGNORECASE)
             patternList.append(pattern)
         db = self.client[self.dbname]
         posts = db["Posts"]

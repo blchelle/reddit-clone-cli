@@ -34,7 +34,7 @@ class MainController:
 
                 continue
 
-            elif mainAction == 'Search for posts':
+            elif mainAction == 'Search for questions':
                 # Prompts and recieves search values
                 result = []
                 postValues = self.mainView.getSearchValues()
