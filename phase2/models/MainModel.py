@@ -6,68 +6,74 @@ import re
 
 class MainModel(model.Model):
 
-    def postQuestion(self, title, body, poster):
-        """
-        inserts question posts into the database
+	def postQuestion(self, title, body, tags, poster):
+		"""
+		inserts question posts into the database
 
 
-        Parameters
-        ----------
-        title : str
-            title of question
-        body : str
-            body of question
-        poster: str
-            username of poster
+		Parameters
+		----------
+		title : str
+			title of question
+		body : str
+			body of question
+		poster: str
+			username of poster
 
-        Return
-        ----------
-        None or {}
+		Return
+		----------
+		None or {}
 
-        """
+		"""
 
-        db = self.client["291db"]
-        posts = db["Posts"]
-        latestID=1
-        latestIDs = posts.find().sort([("$natural",-1)]).limit(1)
-        for doc in latestIDs:
-            latestID = doc["Id"]
-        
-        newID = int(latestID)+1
+		db = self.client["291db"]
+		posts = db["Posts"]
+		latestID=1
+		latestIDs = posts.find().sort([("$natural",-1)]).limit(1)
+		for doc in latestIDs:
+			latestID = doc["Id"]
+		
+		newID = int(latestID)+1
 
-        posts.insert({
-            "Id":str(newID),
-            "PostTypeId": "1",
-            "CreationDate":str(datetime.now()),
-            "Title": title,
-            "Body": "<p>"+body+"</p>\n",
-            "OwnerUserId": poster,
-            "ContentLicense": "CC BY-SA 2.5"
-            })
-        
-        
-    test="test"
-    dbname = "291db"
-    def findQuestions(self, searchString):
-        """
+		posts.insert({
+			"Id":str(newID),
+			"PostTypeId": "1",
+			"CreationDate":str(datetime.now()),
+			"Title": title,
+			"Body": "<p>"+body+"</p>\n",
+			"OwnerUserId": poster,
+			"Tags": tags,
+			"Score": 0,
+			"ViewCount": 0,
+			"AnswerCount": 0,
+			"CommentCount": 0,
+			"FavoriteCount": 0,
+			"ContentLicense": "CC BY-SA 2.5"
+			})
+		
+		
+	test="test"
+	dbname = "291db"
+	def findQuestions(self, searchString):
+		"""
 		find questions based on keywords
 
-        Returns
-        -------
+		Returns
+		-------
 		list of matching questions
 
-        """
-        searchExpr = searchString.split(" ")
-        patternList=[]
-        results = []
-        for keyWord in searchExpr:
-            pattern = re.compile(".*" + keyWord + ".*", re.IGNORECASE)
-            patternList.append(pattern)
-        db = self.client[self.dbname]
-        posts = db["Posts"]
-        buffer = posts.find({"PostTypeId":"1", '$or':[
-        {"Title":{'$in': patternList}},
-        {"Body":{'$in': patternList}},
-        {"Tags":{'$in': patternList}}]})
-        results.extend(buffer)
-        return results
+		"""
+		searchExpr = searchString.split(" ")
+		patternList=[]
+		results = []
+		for keyWord in searchExpr:
+			pattern = re.compile(".*" + keyWord + ".*", re.IGNORECASE)
+			patternList.append(pattern)
+		db = self.client[self.dbname]
+		posts = db["Posts"]
+		buffer = posts.find({"PostTypeId":"1", '$or':[
+		{"Title":{'$in': patternList}},
+		{"Body":{'$in': patternList}},
+		{"Tags":{'$in': patternList}}]})
+		results.extend(buffer)
+		return results
