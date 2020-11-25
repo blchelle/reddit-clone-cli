@@ -146,6 +146,11 @@ class PostsModel(model.Model):
 
 		if uid != -1:
 			documentFields.update( { "OwnerUserId": uid } )
+		
+		buffer = posts.find({"Id":qid})
+
+		newAnswerCount = int(buffer[0]["AnswerCount"]) + 1
+		posts.update({"Id":qid},{"$set":{"AnswerCount":str(newAnswerCount)}})
 
 		posts.insert(documentFields)
 

@@ -106,7 +106,7 @@ class MainView(view.View):
 		header += 'Title' + 79 * ' '
 		header += 'CreationDate' + 12 * ' '
 		header += 'Score' + 2 * ' '
-		header += 'AnswerCount'
+		header += 'AnswerCount\n'
  
 		if(showprompt):
 			results.append("Show more results")

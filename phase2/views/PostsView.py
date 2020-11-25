@@ -84,7 +84,7 @@ class PostsView(view.View):
 		questionActionPrompt = [
 			{
 				'type':'list',
-				'message': ' Id' + 5 * ' ' + 'Body' + 80 * ' ' + 'Creation Date' + 11 * ' ' + 'Score',
+				'message': ' Id' + 5 * ' ' + 'Body' + 80 * ' ' + 'Creation Date' + 11 * ' ' + 'Score\n',
 				'name':'answerListAction',
 				'choices': actions
 			}
