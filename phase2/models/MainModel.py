@@ -71,17 +71,17 @@ class MainModel(model.Model):
 			tags+="<"+tag+">"
 
 		documentFields = {
-			"Id":str(newID),
-			"PostTypeId": "1",
-			"CreationDate":str(datetime.now().isoformat()),
-			"Title": title,
-			"Body":body,
-			"Tags": tags,
-			"Score": 0,
-			"ViewCount": 0,
-			"AnswerCount": 0,
-			"CommentCount": 0,
-			"FavoriteCount": 0,
+			"Id":             str(newID),
+			"PostTypeId":     "1",
+			"CreationDate":   str(datetime.now().isoformat())[0:-3],
+			"Title":          title,
+			"Body":           body,
+			"Tags":           tags,
+			"Score":          0,
+			"ViewCount":      0,
+			"AnswerCount":    0,
+			"CommentCount":   0,
+			"FavoriteCount":  0,
 			"ContentLicense": "CC BY-SA 2.5"
 		}
 
