@@ -100,7 +100,6 @@ def initializeDb(portNumber):
 
     # Gets the list of collections from the db
     collectionList = db.list_collection_names()
-    print(collectionList)
 
     # Drops any of the collections if they exist
     for collection in collectionList:
@@ -168,7 +167,6 @@ def insertJsonFileIntoDb(fileName, collectionName, collection):
         collection: The collection to inser into
     """
     # Read the JSON file
-    print(relativePath +  fileName)
     with open(relativePath + fileName) as jsonFile:
         jsonContent = json.load(jsonFile)[collectionName]['row']
 
