@@ -1,9 +1,6 @@
 from models import model
 from datetime import datetime
-import uuid
-import sqlite3
 import re
-import json
 
 class MainModel(model.Model):
 
@@ -123,40 +120,57 @@ class MainModel(model.Model):
 		list of matching questions
 
 		"""
-		searchExpr = searchString.split(" ")
-		patternList=[]
-		results = []
-
-		useIndexSearch = True
-		for keyWord in searchExpr:
-			if len(keyWord)<3:
-				useIndexSearch = False
-		for keyWord in searchExpr:
-			if useIndexSearch:
-				pattern = (keyWord).lower()
-				db = self.client[self.dbname]
-				posts = db["Posts"]
-
-				buffer = posts.find({"PostTypeId":"1", "Terms":pattern})
-
-				for p in buffer:
-					if p not in results:
-						results.append(p)
-
-			else:
-				break
-
-
-		if useIndexSearch:
-
-			return (results)
-
 		db = self.client[self.dbname]
 		posts = db["Posts"]
-		buffer = posts.find({"PostTypeId":"1", '$or':[
-		{"Title":{'$in': patternList}},
-		{"Body":{'$in': patternList}},
-		{"Tags":{'$in': patternList}}]})
-		results.extend(buffer)
-		return results
 
+		searchExpr = searchString.split(" ")
+		results = set([])
+
+		for keyword in searchExpr:
+			if len(keyword) >= 3:
+				keywordSearchResult = posts.find(
+					{
+						"PostTypeId":"1", "Terms": keyword.lower()
+					}
+				)
+			else:
+				regexPattern = re.compile('.* ' + keyword + ' .*', re.IGNORECASE)
+
+				keywordSearchResult = posts.find(
+					{
+						"PostTypeId":"1",
+						'$or':
+						[
+							{ "Title": { '$regex': regexPattern } },
+							{ "Body":  { '$regex': regexPattern } },
+							{ "Tags":  { '$regex': regexPattern } }
+						]
+					}
+				)
+
+			for post in keywordSearchResult:
+				# Convert the post to a string so we can put it into a set
+				postString = ''
+
+				id           = post['Id']
+				title        = post['Title']
+				creationDate = post['CreationDate']
+				score        = str(post['Score'])
+				numAnswers   = str(post['AnswerCount'])
+
+				postString += id + (7 - len(id)) * ' '
+
+				if len(title) > 80:
+					postString += title[0:80] + "... "
+				else:
+					postString += title[0:len(title)] + ((84 - len(title)) * " ")
+
+				postString += creationDate + ' '
+				postString += score + (7 - len(score)) * ' '
+				postString += numAnswers
+
+				results.add(postString)
+
+		results = list(results)
+		results.sort(key=lambda id: int(id.split()[0]))
+		return results

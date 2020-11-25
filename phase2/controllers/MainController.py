@@ -41,31 +41,31 @@ class MainController:
             elif mainAction == 'Search for questions':
                 # Prompts and recieves search values
                 result = []
-                postValues = self.mainView.getSearchValues()
-                if(postValues['keywords'].strip()==""):
+                postKeywords = self.mainView.getSearchValues()['keywords'].strip()
+                if (postKeywords == ""):
                     self.view.logMessage("#ERROR: Please enter one or more keywords to search for")
                     continue
                 else:
-                    s = postValues['keywords']
+                    s = postKeywords
                     result = self.model.findQuestions(s)
 
 
-                # # finds all search results from the database
-
-                max_len = [10,10,10,10]
+                # Finds all search results from the database
                 if(result == []):
                     self.view.logMessage("# NO MATCHING RESULTS, try a different keyword")
                     continue
                 self.view.logMessage("Results displayed below")
                 # #counters for showing 5 results at a time
 
-                numPostsRemaining = len(result) - 5
+                pageSize = 5
+
+                numPostsRemaining = len(result) - pageSize
                 if (numPostsRemaining > 0):
                     more = True
                 else:
                     more = False
 
-                searchAction = self.mainView.getQuestionSearchAction(result[0:5], max_len, more)
+                searchAction = self.mainView.getQuestionSearchAction(result[0:pageSize], more)
                 if(searchAction == {} ):
                     self.view.logMessage("#ERROR: Don't Click on the Options, Try again with keystrokes")
                     continue
@@ -80,14 +80,13 @@ class MainController:
                     #show the max results possible here and break
                     pageNumber += 1
 
-                    if (numPostsRemaining - 5 > 0):
+                    if (numPostsRemaining - pageSize > 0):
                         more = True
                     else:
                         more = False
 
                     searchAction = self.mainView.getQuestionSearchAction(
-                        result[pageNumber * 5 : pageNumber * 5 + min(numPostsRemaining, 5)],
-                        max_len,
+                        result[pageNumber * pageSize : pageNumber * pageSize + min(numPostsRemaining, pageSize)],
                         more
                     )
 
@@ -96,7 +95,7 @@ class MainController:
                         continue
                     searchAction = searchAction['action method']
 
-                    numPostsRemaining -= 5
+                    numPostsRemaining -= pageSize
 
                 if(searchAction == "Back"):
                     continue
