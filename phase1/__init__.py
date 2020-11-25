@@ -15,7 +15,9 @@ import re
 
 from pymongo import MongoClient
 
-relativePath = __file__.rpartition('/')[0] +'/'
+relativePath = __file__.rpartition('/')[0]
+if relativePath != '':
+    relativePath += '/'
 
 def printHelpMessage(message):
     """
@@ -123,20 +125,26 @@ def createPostsIndex(postsJson):
     for post in postsJson:
         bodyTerms = []
         titleTerms = []
+        tagsTerms = []
 
         # Fetches the body and the title from the post
         body = post.get('Body')
         title = post.get('Title')
+        tags = post.get('Tags')
 
-        # Collects unique terms from the body and the title
+        # Collects unique terms from the body, title, and tags
         if body is not None:
             bodyTerms = set(re.split('[^a-zA-Z0-9]', body.lower()))
 
         if title is not None:
             titleTerms = set(re.split('[^a-zA-Z0-9]', title.lower()))
 
+        if tags is not None:
+            tagsTerms = set("".join(tags.split('<')).split('>'))
+
         # Joins the set of terms
         terms = bodyTerms.union(titleTerms)
+        terms = terms.union(tagsTerms)
         copyTerms = terms.copy()
 
         # Filters out all terms of length less than 3
@@ -160,6 +168,7 @@ def insertJsonFileIntoDb(fileName, collectionName, collection):
         collection: The collection to inser into
     """
     # Read the JSON file
+    print(relativePath +  fileName)
     with open(relativePath + fileName) as jsonFile:
         jsonContent = json.load(jsonFile)[collectionName]['row']
 
