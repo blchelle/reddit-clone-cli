@@ -41,12 +41,12 @@ class MainController:
             elif mainAction == 'Search for questions':
                 # Prompts and recieves search values
                 result = []
-                postValues = self.mainView.getSearchValues()
-                if(postValues['keywords'].strip()==""):
+                postKeywords = self.mainView.getSearchValues()['keywords'].strip()
+                if (postKeywords == ""):
                     self.view.logMessage("#ERROR: Please enter one or more keywords to search for")
                     continue
                 else:
-                    s = postValues['keywords']
+                    s = postKeywords
                     result = self.model.findQuestions(s)
 
 
