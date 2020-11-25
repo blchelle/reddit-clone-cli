@@ -36,6 +36,24 @@ class MainModel(model.Model):
 			latestID = doc["Id"]
 
 		newID = int(latestID)+1
+		
+		bodyTerms = []
+		titleTerms = []
+
+		if(body is not None):
+			bodyTerms = set(re.split('[^a-zA-Z0-9]', body.lower()))
+
+		if(title is not None):
+			titleTerms = set(re.split('[^a-zA-Z0-9]', title.lower()))
+
+		# Joins the set of terms
+		terms = bodyTerms.union(titleTerms)
+		copyTerms = terms.copy()
+
+		# Filters out all terms of length less than 3
+		for term in copyTerms:
+			if len(term) < 3:
+				terms.remove(term)
 
 		tags =""
 
@@ -43,21 +61,18 @@ class MainModel(model.Model):
 
 			tag_exist = tags_collection.find( { "TagName": tag } )
 			if(tag_exist.count() != 0):
-				for doc in tag_exist:
-					tags_collection.update_one(
-						{
-							"_id": doc["_id"]
-						},
-						{
-							"$set": { "Count": doc["Count"] + 1 }
-						}
-					)
+				tags_collection.update_one(
+					{
+						"_id": tag_exist[0]["_id"]
+					},
+					{
+						"$set": { "Count": tag_exist[0]["Count"] + 1 }
+					}
+				)
 			else:
 				latestTagID=0
 				latestTagIDs = tags_collection.find().sort( [ ( "$natural", -1) ] ).limit(1)
-
-				for doc in latestTagIDs:
-					latestTagID = doc["Id"]
+				latestTagID = latestTagIDs[0]["Id"]
 				newTagID = int(latestTagID)+1
 
 				tags_collection.insert(
@@ -78,6 +93,7 @@ class MainModel(model.Model):
 			"Title":          title,
 			"Body":           body,
 			"Tags":           tags,
+			"Terms":		  tuple(terms),
 			"Score":          0,
 			"ViewCount":      0,
 			"AnswerCount":    0,
@@ -90,53 +106,54 @@ class MainModel(model.Model):
 			documentFields.update( { 'OwnerUserId': poster } )
 
 		posts.insert(documentFields)
+		posts.create_index('Terms')
 
 
-    test="test"
-    dbname = "291db"
-    def findQuestions(self, searchString):
-        """
-        find questions based on keywords
+	test="test"
+	dbname = "291db"
+	def findQuestions(self, searchString):
+		"""
+		find questions based on keywords
 
-        Returns
-        -------
-        list of matching questions
+		Returns
+		-------
+		list of matching questions
 
-        """
-        searchExpr = searchString.split(" ")
-        patternList=[]
-        results = []
+		"""
+		searchExpr = searchString.split(" ")
+		patternList=[]
+		results = []
 
-        useIndexSearch = True
-        for keyWord in searchExpr:
-            if len(keyWord)<3:
-                useIndexSearch = False
-        for keyWord in searchExpr:
-            if useIndexSearch:
-                pattern = (keyWord).lower()
-                db = self.client[self.dbname]
-                posts = db["Posts"]
+		useIndexSearch = True
+		for keyWord in searchExpr:
+			if len(keyWord)<3:
+				useIndexSearch = False
+		for keyWord in searchExpr:
+			if useIndexSearch:
+				pattern = (keyWord).lower()
+				db = self.client[self.dbname]
+				posts = db["Posts"]
 
-                buffer = posts.find({"PostTypeId":"1", "Terms":pattern})
+				buffer = posts.find({"PostTypeId":"1", "Terms":pattern})
 
-                for p in buffer:
-                    if p not in results:
-                        results.append(p)
+				for p in buffer:
+					if p not in results:
+						results.append(p)
 
-            else:
-                break
+			else:
+				break
 
 
-        if useIndexSearch:
+		if useIndexSearch:
 
-            return (results)
+			return (results)
 
-        db = self.client[self.dbname]
-        posts = db["Posts"]
-        buffer = posts.find({"PostTypeId":"1", '$or':[
-        {"Title":{'$in': patternList}},
-        {"Body":{'$in': patternList}},
-        {"Tags":{'$in': patternList}}]})
-        results.extend(buffer)
-        return results
+		db = self.client[self.dbname]
+		posts = db["Posts"]
+		buffer = posts.find({"PostTypeId":"1", '$or':[
+		{"Title":{'$in': patternList}},
+		{"Body":{'$in': patternList}},
+		{"Tags":{'$in': patternList}}]})
+		results.extend(buffer)
+		return results
 

@@ -171,3 +171,39 @@ class PostsModel(model.Model):
 		result = votes.find_one( { "$and": [ { "UserId": uid }, { "PostId": pid } ] } )
 
 		return result is not None
+
+	
+	def addVoteToPost(self, pid, uid):
+		"""
+		Adds a row to the votes table for the post and user specified
+
+		Parameters
+		----------
+		pid : str
+			The pid of the post being voted on
+		uid : str
+			The uid of the user giving the vote
+		"""
+
+		db = self.client["291db"]
+		votes = db["Votes"]
+		posts = db["Posts"]
+		latestID = 1
+		latestIDs = votes.find().sort([("$natural",-1)]).limit(1)
+
+		for doc in latestIDs:
+			latestID = doc["Id"]
+
+		newID = int(latestID) + 1
+		documentFields = {
+			"Id":             str(newID),
+			"PostId":		  pid,
+			"VoteTypeId":     "2",
+			"CreationDate":   str(datetime.now().isoformat())[0:-3]
+		}
+		votes.insert(documentFields)
+
+		buffer = posts.find({"Id":pid})
+
+		newScore = int(buffer[0]["Score"]) + 1
+		posts.update({"Id":pid},{"$set":{"Score":str(newScore)}})
