@@ -37,7 +37,7 @@ class AuthController:
 			elif authAction == 'Login as Anonymous':
 				# Prompts and retrieves the desired uid
 				uid = -1
-				self.view.logMessage("Logged in as User: "+str(uid))
+				self.view.logMessage("Logged in anonymously")
 
 				MainController.MainController(self.port).run(uid) # move to main controller
 
