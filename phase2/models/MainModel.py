@@ -3,6 +3,7 @@ from datetime import datetime
 import uuid
 import sqlite3
 import re
+import json
 
 class MainModel(model.Model):
 
@@ -91,36 +92,51 @@ class MainModel(model.Model):
 		posts.insert(documentFields)
 
 
-	test="test"
-	dbname = "291db"
-	def findQuestions(self, searchString):
-		"""
-		find questions based on keywords
+    test="test"
+    dbname = "291db"
+    def findQuestions(self, searchString):
+        """
+        find questions based on keywords
 
-		Returns
-		-------
-		list of matching questions
+        Returns
+        -------
+        list of matching questions
 
-		"""
-		searchExpr = searchString.split(" ")
-		patternList=[]
-		results = []
-		for keyWord in searchExpr:
-			pattern = re.compile(".*" + keyWord + ".*", re.IGNORECASE)
-			patternList.append(pattern)
-		db = self.client[self.dbname]
-		posts = db["Posts"]
-		buffer = posts.find(
-			{
-				"PostTypeId":"1",
-				'$or':
-				[
-					{ "Title": { '$in': patternList } },
-					{ "Body":  { '$in': patternList } },
-					{ "Tags":  { '$in': patternList } }
-				]
-			}
-		)
+        """
+        searchExpr = searchString.split(" ")
+        patternList=[]
+        results = []
 
-		results.extend(buffer)
-		return results
+        useIndexSearch = True
+        for keyWord in searchExpr:
+            if len(keyWord)<3:
+                useIndexSearch = False
+        for keyWord in searchExpr:
+            if useIndexSearch:
+                pattern = (keyWord).lower()
+                db = self.client[self.dbname]
+                posts = db["Posts"]
+
+                buffer = posts.find({"PostTypeId":"1", "Terms":pattern})
+
+                for p in buffer:
+                    if p not in results:
+                        results.append(p)
+
+            else:
+                break
+
+
+        if useIndexSearch:
+
+            return (results)
+
+        db = self.client[self.dbname]
+        posts = db["Posts"]
+        buffer = posts.find({"PostTypeId":"1", '$or':[
+        {"Title":{'$in': patternList}},
+        {"Body":{'$in': patternList}},
+        {"Tags":{'$in': patternList}}]})
+        results.extend(buffer)
+        return results
+
