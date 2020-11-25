@@ -101,12 +101,13 @@ class MainView(view.View):
         -------
         list of results that are selectable
         """
+
         header =  ' Id' + 5 * ' '
         header += 'Title' + 79 * ' '
         header += 'CreationDate' + 12 * ' '
         header += 'Score' + 2 * ' '
         header += 'AnswerCount'
-
+ 
         if(showprompt):
             results.append("Show more results")
 

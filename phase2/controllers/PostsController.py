@@ -14,7 +14,8 @@ class PostsController:
 		Runs through the post action process
 		"""
 		self.model.updateQuestionView(pid)
-
+		question = self.model.getPostsFromPid(pid)
+		self.view.displayQuestion(question)
 		postAction = ''
 		while postAction != 'Back':
 
@@ -40,7 +41,7 @@ class PostsController:
 				answersToQuestion = self.model.listAnswersForQuestion(pid)
 				acceptedAnswerPid = self.model.getAcceptedAnswerId(pid)
 				selectedAnswerPid = self.view.getAnswerListAction(answersToQuestion, acceptedAnswerPid)
-				selectedAnswerInfo = self.model.getAnswerFromPid(selectedAnswerPid)
+				selectedAnswerInfo = self.model.getPostsFromPid(selectedAnswerPid)
 				self.view.outputAnswerFields(selectedAnswerInfo)
 				self.runAnswers(uid, selectedAnswerPid)
 			elif postAction == "Vote":

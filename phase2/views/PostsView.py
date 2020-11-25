@@ -144,3 +144,11 @@ class PostsView(view.View):
         ]
 
         return prompt(postAnswerPrompts, style=self.style)
+
+    def displayQuestion(self, question):
+
+        print("------------------ Selected Question ------------------")
+        for fieldName in question:
+            if fieldName in question:
+                print(fieldName, question[fieldName])
+        print("------------------------------------------------------")
