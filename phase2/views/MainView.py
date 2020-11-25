@@ -85,8 +85,8 @@ class MainView(view.View):
                 max_len[0] = len(r["Id"])
             if len(r["Title"]) > max_len[1]:
                 max_len[1] = len(r["Title"])
-            if len(r["CreationDate"].split("T")[0]) > max_len[2]:
-                max_len[2] = len(r["CreationDate"].split("T")[0])
+            if len(r["CreationDate"]) > max_len[2]:
+                max_len[2] = len(r["CreationDate"])
             if len(str(r["Score"])) > max_len[3]:
                 max_len[3] = len(str(r["Score"]))
             if len(str(r["AnswerCount"])) > max_len[4]:
@@ -103,24 +103,26 @@ class MainView(view.View):
         """
         max_len = self.findMaxLength(results)
         postList=[]
-        header='Post Id'
-        header+='  '+'Title'.ljust(23)
+        header=' Id'.ljust(max_len[0])
+        header+='   '+'Title'.ljust(75)
         header+='  '+'Creation Date'.ljust(max_len[2])
         header+='  '+'Score'.ljust(max_len[3])
-        header+='  '+'Answer Count'.ljust(max_len[4])
+        header+='  '+'#Ans'.ljust(max_len[4])
 
 
 
         for post in results:
             pString = ""
-            pString += post["Id"].ljust(max_len[0]) + "    "
-            if len(post["Title"])>20:
-                post["Title"] = post["Title"][0:20]+"..."
-                max_len[1]=25
+            pString += post["Id"].ljust(max_len[0]) + "  "
+            if len(post["Title"])>75:
+                post["Title"] = post["Title"][0:72]+"..."
+            max_len[1]=75
             pString += post["Title"].ljust(max_len[1]) + "  "
-            pString += post["CreationDate"].split("T")[0].ljust(max_len[2]) + "     "
-            pString += str(post["Score"]).ljust(max_len[3]) + "       "
-            pString += str(post["AnswerCount"]).ljust(max_len[4]) + "  "
+            pString += post["CreationDate"].ljust(max_len[2]) + "  "
+            if(max_len[3]<5):
+                max_len[3]=5
+            pString += str(post["Score"]).ljust(max_len[3]) + "   "
+            pString += str(post["AnswerCount"]).ljust(max_len[4])
             postList.append(pString)
 
         if(showprompt):
