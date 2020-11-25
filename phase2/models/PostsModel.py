@@ -176,3 +176,45 @@ class PostsModel(model.Model):
 		result = votes.find_one( { "$and": [ { "UserId": uid }, { "PostId": pid } ] } )
 
 		return result is not None
+
+	def displayQuestion(self, pid):
+		db = self.client["291db"]
+		posts = db["Posts"]
+		question = posts.find_one({"Id":pid})
+
+		print("------------------ Selected Question ------------------")
+		if "Id" in question:
+			print("Id:",question["Id"])
+		if "PostTypeId" in question:
+			print("PostTypeId:",question["PostTypeId"])
+		if "AcceptedAnswerId" in question:
+			print("AcceptedAnswerId:",question["AcceptedAnswerId"])
+		if "CreationDate" in question:
+			print("CreationDate:",question["CreationDate"])
+		if "Score" in question:
+			print("Score:",question["Score"])
+		if "ViewCount" in question:
+			print("ViewCount:",question["ViewCount"])
+		if "OwnerUserId" in question:
+			print("OwnerUserId:",question["OwnerUserId"])
+		if "LastEditorUserId" in question:
+			print("LastEditorUserId:",question["LastEditorUserId"])
+		if "LastEditDate" in question:
+			print("LastEditDate:",question["LastEditDate"])
+		if "LastActivityDate" in question:
+			print("LastActivityDate:",question["LastActivityDate"])
+		if "Tags" in question:
+			print("Tags:",question["Tags"])
+		if "AnswerCount" in question:
+			print("AnswerCount:",question["AnswerCount"])
+		if "CommentCount" in question:
+			print("CommentCount:",question["CommentCount"])
+		if "FavoriteCount" in question:
+			print("FavoriteCount:",question["FavoriteCount"])
+		if "ContentLicense" in question:
+			print("ContentLicense:",question["ContentLicense"])
+		if "Title" in question:
+			print("Title:",question["Title"])
+		if "Body" in question:
+			print("Body:",question["Body"])
+		print("------------------------------------------------------")

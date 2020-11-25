@@ -107,7 +107,7 @@ class MainView(view.View):
         header+='   '+'Title'.ljust(75)
         header+='  '+'Creation Date'.ljust(max_len[2])
         header+='  '+'Score'.ljust(max_len[3])
-        header+='  '+'#Ans'.ljust(max_len[4])
+        header+='  '+'#Ans\n'
 
 
 
