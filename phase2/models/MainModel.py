@@ -55,6 +55,7 @@ class MainModel(model.Model):
 		tags =""
 
 		for tag in tagsList:
+			tag = tag.lower()
 
 			if(tag not in tagsSet):
 				tagsSet.add(tag)
@@ -83,6 +84,8 @@ class MainModel(model.Model):
 							"Count": 1
 						}
 					)
+
+		terms = terms.union(tagsSet)
 
 		documentFields = {
 			"Id":             str(newID),
