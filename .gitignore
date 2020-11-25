@@ -5,6 +5,7 @@ __pycache__/
 
 # DB Folder
 db
+291-db-mongo
 
 # JSON
 *.json

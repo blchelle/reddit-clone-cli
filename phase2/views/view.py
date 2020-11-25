@@ -13,10 +13,10 @@ class View:
 		self.style = style_from_dict({
 			Token.Separator: '#CC5454',
 			Token.QuestionMark: '#BCBBBB bold',
-			Token.Selected: '#F48024',  # default
-			Token.Pointer: '#F48024 bold',
+			Token.Selected: '#FF5700',  # default
+			Token.Pointer: '#FF5700 bold',
 			Token.Instruction: '',  # default
-			Token.Answer: '#F48024 bold',
+			Token.Answer: '#FF5700 bold',
 			Token.Question: '',
 		})
 

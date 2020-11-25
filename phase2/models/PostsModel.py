@@ -52,7 +52,7 @@ class PostsModel(model.Model):
 		return results
 
 
-	def getAnswerFromPid(self, pid):
+	def getPostsFromPid(self, pid):
 		"""
 		Gets all the fields for a document from the posts collection
 		This method should be called within the context of getting the info
@@ -149,8 +149,6 @@ class PostsModel(model.Model):
 
 		posts.insert(documentFields)
 
-		return True
-
 	def userHasVotedOnPost(self, uid, pid):
 		"""
 		Determines if a user (uid) has voted on the post (pid)
@@ -170,7 +168,7 @@ class PostsModel(model.Model):
 
 		return result is not None
 
-	
+
 	def addVoteToPost(self, pid, uid):
 		"""
 		Adds a row to the votes table for the post and user specified
@@ -201,7 +199,6 @@ class PostsModel(model.Model):
 
 		if uid != -1:
 			documentFields.update( { 'UserId': uid } )
-		
 		votes.insert(documentFields)
 
 		buffer = posts.find({"Id":pid})

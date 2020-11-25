@@ -1,109 +1,127 @@
+"""
+Phase 2 of the Reddit Clone CLI.
+Main Controller
+
+This file is responsible for ensuring clean communication between the
+cli for the main menu (MainView) and the db (MainModel)
+
+Contributors:
+    Alireza Azimi
+    Archit Siby
+    Brock Chelle
+"""
 from views import view
 from views import MainView
 from models import MainModel
 from controllers import PostsController
-# from controllers import postsController
+import sys
 
 class MainController:
-    def __init__(self, port):
-        self.model = MainModel.MainModel(port)
-        self.view = view.View()
-        self.mainView = MainView.MainView()
-        self.port = port
-        self.postsController = PostsController.PostsController(port)
+	def __init__(self, port):
+		self.model = MainModel.MainModel(port)
+		self.view = view.View()
+		self.mainView = MainView.MainView()
+		self.port = port
+		self.postsController = PostsController.PostsController(port)
 
 
-    def run(self, user):
-        """
-        Runs through the main menu process
-        """
-        # Prompts and retrieves the users main action choice
+	def run(self, user):
+		"""
+		Runs through the main menu process
 
-        # Continuously prompt the user for the user until they specify "Log Out"
-        while True:
+		Args:
+			user: The uid of the user (-1 if anonymous)
+		"""
+		# Continuously prompt the user for the user until they specify "Log Out"
+		while True:
 
-            mainAction = self.mainView.getMainAction()
-            if(mainAction == {}):
-                self.view.logMessage("#ERROR: Don't Click on the Options, Try again with keystrokes")
-                continue
-            mainAction = mainAction['action method']
+			mainAction = self.mainView.getMainAction()
+			if mainAction == {}:
+				self.view.logMessage("#ERROR: Don't Click on the Options, Try again with keystrokes")
+				continue
 
-            if mainAction == 'Post a question':
-                # Prompts and recieves question values
-                postValues = self.mainView.getQuestionPostValues()
-                tagsList=postValues['tags'].strip().split()
+			mainAction = mainAction['action method']
 
-                # posts question to database
-                self.model.postQuestion(postValues['title'], postValues['text'],tagsList,user)
-                self.view.logMessage("Question posted successfully")
-                continue
+			if mainAction == 'Post a question':
+				# Prompts and recieves question values
+				postValues = self.mainView.getQuestionPostValues()
+				tagsList=postValues['tags'].strip().split()
 
-            elif mainAction == 'Search for questions':
-                # Prompts and recieves search values
-                result = []
-                postValues = self.mainView.getSearchValues()
-                if(postValues['keywords'].strip()==""):
-                    self.view.logMessage("#ERROR: Please enter one or more keywords to search for")
-                    continue
-                else:
-                    s = postValues['keywords']
-                    result = self.model.findQuestions(s)
+				# Posts question to database
+				self.model.postQuestion(postValues['title'], postValues['text'],tagsList,user)
+				self.view.logMessage("Question posted successfully")
+				continue
+
+			elif mainAction == 'Search for questions':
+				# Prompts and receives search values
+				result = []
+				postKeywords = self.mainView.getSearchValues()['keywords'].strip()
+
+				if postKeywords == "":
+					self.view.logMessage("#ERROR: Please enter one or more keywords to search for")
+					continue
+				else:
+					s = postKeywords
+					result = self.model.findQuestions(s)
 
 
-                # # finds all search results from the database
+				# Finds all search results from the database
+				if result == []:
+					self.view.logMessage("#NO MATCHING RESULTS, try a different keyword")
+					continue
+				self.view.logMessage("Results displayed below")
 
-                max_len = [10,10,10,10]
-                if(result == []):
-                    self.view.logMessage("# NO MATCHING RESULTS, try a different keyword")
-                    continue
-                self.view.logMessage("Results displayed below")
-                # #counters for showing 5 results at a time
+				# Counters for showing 5 results at a time
+				pageSize = 10
 
-                numPostsRemaining = len(result) - 5
-                if (numPostsRemaining > 0):
-                    more = True
-                else:
-                    more = False
+				# Checks if the results needs pagination
+				numPostsRemaining = len(result) - pageSize
+				more = numPostsRemaining > 0
 
-                searchAction = self.mainView.getQuestionSearchAction(result[0:5], max_len, more)
-                if(searchAction == {} ):
-                    self.view.logMessage("#ERROR: Don't Click on the Options, Try again with keystrokes")
-                    continue
-                searchAction = searchAction['action method']
+				# Displays the first page of results, and prompts for user input
+				searchAction = self.mainView.getQuestionSearchAction(result[0:pageSize], more)
+				if searchAction == {}:
+					self.view.logMessage('#ERROR: Don\'t Click on the Options, Try again with keystrokes')
+					continue
 
-                # # Posting selected post to screen
-                self.view.logMessage(" "+searchAction)
+				searchAction = searchAction['action method']
 
-                # #show 5 more as asked more
-                pageNumber = 0
-                while(searchAction == "Show more results"):
-                    #show the max results possible here and break
-                    pageNumber += 1
+				# Posting selected post to screen
+				self.view.logMessage(" " + searchAction)
 
-                    if (numPostsRemaining - 5 > 0):
-                        more = True
-                    else:
-                        more = False
+				# Show more results if the user specified to do so
+				pageNumber = 0
+				while searchAction == 'Show more results':
+					pageNumber += 1
 
-                    searchAction = self.mainView.getQuestionSearchAction(
-                        result[pageNumber * 5 : pageNumber * 5 + min(numPostsRemaining, 5)],
-                        max_len,
-                        more
-                    )
+					# Checks if the results need pagination
+					more = numPostsRemaining - pageSize > 0
 
-                    if(searchAction == {} ):
-                        self.view.logMessage("#ERROR: Don't Click on the Options, Try again with keystrokes")
-                        continue
-                    searchAction = searchAction['action method']
+					# Calculates where the page should start and stop
+					startIndex = pageNumber * pageSize
+					endIndex   = pageNumber * pageSize + min(numPostsRemaining, pageSize)
 
-                    numPostsRemaining -= 5
+					# Displays the next page of results and prompts the user for a response
+					searchAction = self.mainView.getQuestionSearchAction(
+						result[startIndex : endIndex],
+						more
+					)
 
-                if(searchAction == "Back"):
-                    continue
+					# This is an edge case required for PyInquirer
+					if searchAction == {}:
+						self.view.logMessage('#ERROR: Don\'t Click on the Options, Try again with keystrokes')
+						continue
 
-                # #retrieve the post id and go to post action menu
-                selectedPost = searchAction.split()[0]
-                PostsController.PostsController(self.port).run(user, selectedPost)
+					searchAction = searchAction['action method']
+					numPostsRemaining -= pageSize
 
-            else: # Log out
-                return
+				# Navigates back to the main menu if the user specifies 'Back'
+				if searchAction == "Back":
+					continue
+
+				# Retrieve the post id and go to post action menu
+				selectedPost = searchAction.split()[0]
+				PostsController.PostsController(self.port).run(user, selectedPost)
+
+			else: # Log out
+				sys.exit(-1)
