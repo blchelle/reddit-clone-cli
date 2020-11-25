@@ -54,36 +54,40 @@ class MainModel(model.Model):
 			if len(term) < 3:
 				terms.remove(term)
 
+		tagsSet =set()
 		tags =""
 
 		for tag in tagsList:
 
-			tag_exist = tags_collection.find( { "TagName": tag } )
-			if(tag_exist.count() != 0):
-				tags_collection.update_one(
-					{
-						"_id": tag_exist[0]["_id"]
-					},
-					{
-						"$set": { "Count": tag_exist[0]["Count"] + 1 }
-					}
-				)
-			else:
-				latestTagID=0
-				latestTagIDs = tags_collection.find().sort( [ ( "$natural", -1) ] ).limit(1)
-				latestTagID = latestTagIDs[0]["Id"]
-				newTagID = int(latestTagID)+1
+			if(tag not in tagsSet):
+				tagsSet.add(tag)
+				tags+="<"+tag+">"
 
-				tags_collection.insert(
-					{
-						"Id": str(newTagID),
-						"TagName": tag,
-						"Count": 1
-					}
-				)
+				tag_exist = tags_collection.find( { "TagName": tag } )
+				if(tag_exist.count() != 0):
+					tags_collection.update_one(
+						{
+							"_id": tag_exist[0]["_id"]
+						},
+						{
+							"$set": { "Count": tag_exist[0]["Count"] + 1 }
+						}
+					)
+				else:
+					latestTagID=0
+					latestTagIDs = tags_collection.find().sort( [ ( "$natural", -1) ] ).limit(1)
+					latestTagID = latestTagIDs[0]["Id"]
+					newTagID = int(latestTagID)+1
 
+					tags_collection.insert(
+						{
+							"Id": str(newTagID),
+							"TagName": tag,
+							"Count": 1
+						}
+					)
 
-			tags+="<"+tag+">"
+			
 
 		documentFields = {
 			"Id":             str(newID),
