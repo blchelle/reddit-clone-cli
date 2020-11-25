@@ -6,9 +6,9 @@ This file is responsible for ensuring clean communication between the
 cli for authentication (AuthView) and the db (AuthModel)
 
 Contributors:
-    Alireza Azimi
-    Archit Siby
-    Brock Chelle
+	Alireza Azimi
+	Archit Siby
+	Brock Chelle
 """
 from models import authModel
 from views import authView

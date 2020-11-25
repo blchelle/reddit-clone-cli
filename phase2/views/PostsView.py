@@ -6,9 +6,9 @@ This file is responsible for interfacing with the user
 for both the questions menu and the answers menu
 
 Contributors:
-    Alireza Azimi
-    Archit Siby
-    Brock Chelle
+	Alireza Azimi
+	Archit Siby
+	Brock Chelle
 """
 
 from views import view
