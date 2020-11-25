@@ -198,6 +198,10 @@ class PostsModel(model.Model):
 			"VoteTypeId":     "2",
 			"CreationDate":   str(datetime.now().isoformat())[0:-3]
 		}
+
+		if uid != -1:
+			documentFields.update( { 'UserId': uid } )
+		
 		votes.insert(documentFields)
 
 		buffer = posts.find({"Id":pid})
