@@ -93,7 +93,7 @@ class MainView(view.View):
                 max_len[4] = len(str(r["AnswerCount"]))
         return max_len
 
-    def getQuestionSearchAction(self,results,max_len,showprompt):
+    def getQuestionSearchAction(self, results, showprompt):
         """
         Prompts the user to choose post from Search result
 
@@ -101,34 +101,17 @@ class MainView(view.View):
         -------
         list of results that are selectable
         """
-        max_len = self.findMaxLength(results)
-        postList=[]
-        header=' Id'.ljust(max_len[0])
-        header+='   '+'Title'.ljust(75)
-        header+='  '+'Creation Date'.ljust(max_len[2])
-        header+='  '+'Score'.ljust(max_len[3])
-        header+='  '+'#Ans\n'
 
-
-
-        for post in results:
-            pString = ""
-            pString += post["Id"].ljust(max_len[0]) + "  "
-            if len(post["Title"])>75:
-                post["Title"] = post["Title"][0:72]+"..."
-            max_len[1]=75
-            pString += post["Title"].ljust(max_len[1]) + "  "
-            pString += post["CreationDate"].ljust(max_len[2]) + "  "
-            if(max_len[3]<5):
-                max_len[3]=5
-            pString += str(post["Score"]).ljust(max_len[3]) + "   "
-            pString += str(post["AnswerCount"]).ljust(max_len[4])
-            postList.append(pString)
-
+        header =  ' Id' + 5 * ' '
+        header += 'Title' + 79 * ' '
+        header += 'CreationDate' + 12 * ' '
+        header += 'Score' + 2 * ' '
+        header += 'AnswerCount'
+ 
         if(showprompt):
-            postList.append("Show more results")
+            results.append("Show more results")
 
-        postList.append("Back")
+        results.append("Back")
 
 
         postSearchPrompts = [
@@ -136,7 +119,7 @@ class MainView(view.View):
                 'type': 'list',
                 'message': header,
                 'name': 'action method',
-                'choices': postList
+                'choices': results
             }
         ]
 

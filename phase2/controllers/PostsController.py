@@ -14,7 +14,8 @@ class PostsController:
 		Runs through the post action process
 		"""
 		self.model.updateQuestionView(pid)
-		self.view.displayQuestion(pid)
+		question = self.model.getAnswerFromPid(pid)
+		self.view.displayQuestion(question)
 		postAction = ''
 		while postAction != 'Back':
 
