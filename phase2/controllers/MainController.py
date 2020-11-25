@@ -14,6 +14,7 @@ from views import view
 from views import MainView
 from models import MainModel
 from controllers import PostsController
+import sys
 
 class MainController:
 	def __init__(self, port):
@@ -123,4 +124,4 @@ class MainController:
 				PostsController.PostsController(self.port).run(user, selectedPost)
 
 			else: # Log out
-				return
+				sys.exit(-1)
