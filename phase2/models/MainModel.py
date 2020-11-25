@@ -6,7 +6,7 @@ class MainModel(model.Model):
 
 	def postQuestion(self, title, body, tagsList, poster):
 		"""
-		inserts question posts into the database
+		Inserts question posts into the database
 
 
 		Parameters
@@ -32,7 +32,7 @@ class MainModel(model.Model):
 		latestID = latestIDs[0]["Id"]
 
 		newID = int(latestID)+1
-		
+
 		bodyTerms = []
 		titleTerms = []
 
@@ -83,8 +83,6 @@ class MainModel(model.Model):
 							"Count": 1
 						}
 					)
-
-			
 
 		documentFields = {
 			"Id":             str(newID),
