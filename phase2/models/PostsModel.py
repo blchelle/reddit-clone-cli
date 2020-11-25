@@ -149,8 +149,6 @@ class PostsModel(model.Model):
 
 		posts.insert(documentFields)
 
-		return True
-
 	def userHasVotedOnPost(self, uid, pid):
 		"""
 		Determines if a user (uid) has voted on the post (pid)
