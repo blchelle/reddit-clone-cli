@@ -144,3 +144,14 @@ class PostsView(view.View):
         ]
 
         return prompt(postAnswerPrompts, style=self.style)
+        
+	def displayQuestion(self, pid):
+		db = self.client["291db"]
+		posts = db["Posts"]
+		question = posts.find_one({"Id":pid})
+
+		print("------------------ Selected Question ------------------")
+		for fieldName in question:
+			if fieldName in question:
+				print(fieldName, question[fieldName])
+		print("------------------------------------------------------")
