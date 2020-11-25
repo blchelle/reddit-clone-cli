@@ -32,8 +32,7 @@ class MainModel(model.Model):
 		tags_collection = db["Tags"]
 		latestID=0
 		latestIDs = posts.find().sort([("$natural",-1)]).limit(1)
-		for doc in latestIDs:
-			latestID = doc["Id"]
+		latestID = latestIDs[0]["Id"]
 
 		newID = int(latestID)+1
 		

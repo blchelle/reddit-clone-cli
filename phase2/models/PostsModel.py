@@ -129,9 +129,7 @@ class PostsModel(model.Model):
 		posts = db["Posts"]
 		latestID = 1
 		latestIDs = posts.find().sort([("$natural",-1)]).limit(1)
-
-		for doc in latestIDs:
-			latestID = doc["Id"]
+		latestID = latestIDs[0]["Id"]
 
 		newID = int(latestID) + 1
 
@@ -191,8 +189,7 @@ class PostsModel(model.Model):
 		latestID = 1
 		latestIDs = votes.find().sort([("$natural",-1)]).limit(1)
 
-		for doc in latestIDs:
-			latestID = doc["Id"]
+		latestID = latestIDs[0]["Id"]
 
 		newID = int(latestID) + 1
 		documentFields = {
