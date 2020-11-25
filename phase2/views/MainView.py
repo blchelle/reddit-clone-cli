@@ -1,5 +1,5 @@
 from views import view
-from PyInquirer import style_from_dict, Token, prompt, Separator
+from PyInquirer import prompt
 
 class MainView(view.View):
 	"""

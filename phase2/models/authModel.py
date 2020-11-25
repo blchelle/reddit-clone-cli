@@ -1,6 +1,4 @@
 from models import model
-import sqlite3
-
 
 class AuthModel(model.Model):
 

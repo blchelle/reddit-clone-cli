@@ -10,7 +10,6 @@ Contributors:
 	Archit Siby
 	Brock Chelle
 """
-
 from views import view
 from PyInquirer import prompt
 
