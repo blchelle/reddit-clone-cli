@@ -199,7 +199,6 @@ class PostsModel(model.Model):
 
 		if uid != -1:
 			documentFields.update( { 'UserId': uid } )
-
 		votes.insert(documentFields)
 
 		buffer = posts.find({"Id":pid})
