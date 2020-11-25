@@ -59,6 +59,11 @@ class PostsController:
 			elif postAction == "List Answers":
 				# Finds and displays all the answers to the question
 				answersToQuestion = self.model.listAnswersForQuestion(pid)
+
+				if answersToQuestion == []:
+					self.view.logMessage("No Answers for this question")
+					continue
+
 				acceptedAnswerPid = self.model.getAcceptedAnswerId(pid)
 				selectedAnswerPid = self.view.getAnswerListAction(answersToQuestion, acceptedAnswerPid)
 
