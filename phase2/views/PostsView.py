@@ -4,7 +4,7 @@ from PyInquirer import prompt
 
 class PostsView(view.View):
 
-    def getQuestionAction(self):
+    def getQuestionAction(self, userCanVote):
         """
         Get action menu for questions
 
@@ -13,7 +13,11 @@ class PostsView(view.View):
         Prompt message for question actions
 
         """
-        actions = ["Answer Question", "List Answers", "Vote", "Back"]
+        actions = ["Answer Question", "List Answers"]
+        if userCanVote:
+            actions.append("Vote")
+        actions.append("Back")
+
         questionActionPrompt = [
             {
                 'type':'list',
@@ -94,16 +98,21 @@ class PostsView(view.View):
         print()
 
 
-    def getAnswerAction(self):
+    def getAnswerAction(self, userCanVote):
         """
         """
+        choices = []
+        if userCanVote:
+            choices.append('Vote')
+
+        choices.append('Back')
 
         answerActionPrompt = [
             {
                 'type':'list',
                 'message': 'Select an action',
                 'name':'answerAction',
-                'choices': ['Vote', 'Back']
+                'choices': choices
             }
         ]
 

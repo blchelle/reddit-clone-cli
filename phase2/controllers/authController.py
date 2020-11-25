@@ -20,12 +20,11 @@ class AuthController:
 				continue
 			authAction = authAction['auth method']
 
-			if authAction == 'Login with Username':
+			if authAction == 'Login with UserId':
 				# Prompts and retrieves the users credentials
-				credentials = self.view.getLoginCredentials()
+				uid = self.view.getLoginCredentials()
 
 				# Attempts to login the user with their credentials provided
-				uid = credentials['uid']
 				results = self.model.attemptLogin(uid)
 
 				if len(results)> 0:
