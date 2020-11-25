@@ -138,11 +138,6 @@ class PostsView(view.View):
         postAnswerPrompts = [
             {
                 'type': 'input',
-                'message': 'Enter answer title:',
-                'name': 'title'
-            },
-            {
-                'type': 'input',
                 'message': 'Enter answer body: ',
                 'name': 'body'
             }

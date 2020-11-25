@@ -27,9 +27,8 @@ class PostsController:
 
 			if postAction == "Answer Question":
 				postValues = self.view.getAnswerPostValues()
-				title = postValues['title']
 				body = postValues['body']
-				postCreationIsSuccessful = self.model.createAnswer(title, body, pid, uid)
+				postCreationIsSuccessful = self.model.createAnswer(body, pid, uid)
 
 				if postCreationIsSuccessful:
 					self.view.logMessage("Successfully added your answer")
