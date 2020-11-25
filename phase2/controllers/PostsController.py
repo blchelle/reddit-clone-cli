@@ -44,9 +44,15 @@ class PostsController:
 				self.view.outputAnswerFields(selectedAnswerInfo)
 				self.runAnswers(uid, selectedAnswerPid)
 			elif postAction == "Vote":
+				self.model.addVoteToPost(pid, uid)
+				self.view.logMessage("Successfully upvoted post")
 				continue
 
 	def runAnswers(self, uid, aid):
 		action = ''
 		while action != 'Back':
 			action = self.view.getAnswerAction(uid == -1 or not self.model.userHasVotedOnPost(uid, aid))
+			if (action == "Vote"):
+				self.model.addVoteToPost(aid, uid)
+				self.view.logMessage("Successfully upvoted post")
+				continue
